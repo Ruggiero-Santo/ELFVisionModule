@@ -1,20 +1,25 @@
 import requests
 import cv2
-from PIL import Image,  ImageDraw
+import os
+#from PIL import Image,  ImageDraw
 
 class Azure():
 
-    url_face = 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect'
-    url_vision = "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze"
-
-    params_face = {
+    FACE_API = {'key': os.getenv('AZURE_FACE', None),
+    'url' :'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect',
+    'params':{
         'returnFaceId': 'true',
         'returnFaceLandmarks': 'true',
         'returnFaceAttributes': 'age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise',
-    }
-    params_vision = {
-        'visualFeatures': 'Categories,Description,Color'
-    }
+    } }
+
+
+    VISION_API = {'key': os.getenv('AZURE_VISION', None),
+     'url' :'https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze',
+     'params' :{
+         'visualFeatures': 'Categories,Description,Color'
+     }
+     }
 
     def _drawRectFace(image, jsonResult):
         for face in jsonResult:
@@ -40,10 +45,17 @@ class Azure():
     def __init__(self):
         self.init = true
 
-    def __init__(self, key_API, url_API, paramsAPI):
-        self.url_API = url_API
-        self.headers = {'Ocp-Apim-Subscription-Key': key_API}
-        self.params = paramsAPI
+    def __init__(self, API = "face"):
+
+        if API == "face":
+            API = self.FACE_API
+        if API == "vision":
+            API = self.VISION_API
+
+        self.url_API = API['url']
+        self.headers = {'Ocp-Apim-Subscription-Key': API['key']}
+        self.params = API['params']
+
 
         self.init = False
 
@@ -64,23 +76,23 @@ class Azure():
     def finalizer(self):
         pass
 
-    def call_AzureAPI(url_API, key_API, paramsAPI, url_image = None, path_image = None, data_image = None):
-
-        headers = {'Ocp-Apim-Subscription-Key': key_API}
-        response = image = None
-
-        if url_image == None and path_image == None and data_image == None:
-                raise ValueError('You must specify url_image or pth_image.')
-        else:
-            if url_image != None:#Call API with image on cloud (url)
-                image = Image.open(BytesIO(requests.get(url_image).content))
-                response = requests.post(api_url, params=params, headers=headers, json={'url': url_image})#url_image
-            else: #Call API with Own image
-                if data_image != None:
-                    data = data_image
-                else:
-                    data = image = open(path_image, "rb").read()
-                headers.update({'Content-Type': 'application/octet-stream'})
-                response = requests.post(api_url, params=params, headers=headers, data=data)
-
-        return (image, response.json())
+    # def call_AzureAPI(url_API, key_API, paramsAPI, url_image = None, path_image = None, data_image = None):
+    #
+    #     headers = {'Ocp-Apim-Subscription-Key': key_API}
+    #     response = image = None
+    #
+    #     if url_image == None and path_image == None and data_image == None:
+    #             raise ValueError('You must specify url_image or pth_image.')
+    #     else:
+    #         if url_image != None:#Call API with image on cloud (url)
+    #             image = Image.open(BytesIO(requests.get(url_image).content))
+    #             response = requests.post(api_url, params=params, headers=headers, json={'url': url_image})#url_image
+    #         else: #Call API with Own image
+    #             if data_image != None:
+    #                 data = data_image
+    #             else:
+    #                 data = image = open(path_image, "rb").read()
+    #             headers.update({'Content-Type': 'application/octet-stream'})
+    #             response = requests.post(api_url, params=params, headers=headers, data=data)
+    #
+    #     return (image, response.json())

@@ -9,7 +9,7 @@ def demo(myAPI):
         # Capture frame-by-frame
         ret, frame = video_capture.read() #np.array
 
-        frame = myAPI.caller(frame)
+        frame = myAPI.caller(cv2.resize(frame, (320, 240)) )
 
         # Display the resulting frame
         cv2.imshow('Video', frame)
@@ -22,6 +22,6 @@ def demo(myAPI):
     cv2.destroyAllWindows()
 
 
-demo(API_Class.openCV())
+#demo(API_Class.openCV())
 # demo(API_Class.SkyBiometry())
-# demo(API_Class.Azure(API_Class.Azure.url_face, API_Class.Azure.key_face, API_Class.Azure.params_face))
+demo(API_Class.Azure())
