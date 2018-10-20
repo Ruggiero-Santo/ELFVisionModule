@@ -1,6 +1,6 @@
 import cv2
 import sys
-import API_Class
+import API_Class as API
 
 def demo(myAPI):
     myAPI.initializer()
@@ -22,6 +22,6 @@ def demo(myAPI):
     cv2.destroyAllWindows()
 
 
-#demo(API_Class.openCV())
-# demo(API_Class.SkyBiometry())
-demo(API_Class.Azure())
+#demo(API.openCV())
+demo(API.SkyBiometry())
+#demo(API.Azure())

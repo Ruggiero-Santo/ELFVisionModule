@@ -1,7 +1,6 @@
 import requests
 import cv2
 import os
-#from PIL import Image,  ImageDraw
 
 class Azure():
 
@@ -56,12 +55,11 @@ class Azure():
         self.headers = {'Ocp-Apim-Subscription-Key': API['key']}
         self.params = API['params']
 
-
         self.init = False
 
     def initializer(self):
         if self.init:
-            raise ValueError("You must set  key_API, url_API, paramsAPI")
+            raise ValueError("Initialization aborted")
         self.headers.update({'Content-Type': 'application/octet-stream'})
 
     def caller(self, frame):
