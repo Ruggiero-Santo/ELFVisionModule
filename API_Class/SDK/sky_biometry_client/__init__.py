@@ -1,1 +1,1 @@
-from face_client import *
+from .face_client import *

@@ -1,18 +1,18 @@
-from sky_biometry_client import FaceClient
+from .SDK import FaceClient
 import os
 
 class SkyBiometry():
 
-    def __init__(self):
-        self.key = os.getenv('SKYB_KEY', None)
-        self.secret = os.getenv('SKYB_SECRET', None)
+    def __init__(self, SKYB_Key = None, SKYB_Secret = None):
+        self.key = os.getenv('SKYB_KEY', None) if SKYB_Key==None else SKYB_Key
+        self.secret = os.getenv('SKYB_SECRET', None) if SKYB_Secret==None else SKYB_Secret
 
+        if self.key == None or self.key == None:
+            raise ValueError("You must set Env with SKYB_KEY and SKYB_SECRET (value of your application) or indicate them as parameters.")
         self.client = FaceClient(self.key, self.secret)
-        self.init = True
 
-    # def initializer(self):
-    #     if self.init:
-    #         self.client = FaceClient(SkyBiometry.key, SkyBiometry.secret)
+    def initializer(self):
+        pass
 
     def caller(self, frame):
         response = self.client.faces_detect(buffer=frame)
