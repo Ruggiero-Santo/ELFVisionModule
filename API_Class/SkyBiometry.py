@@ -1,5 +1,6 @@
 from .SDK import FaceClient
 import os
+import cv2
 
 class SkyBiometry():
 
@@ -15,7 +16,10 @@ class SkyBiometry():
         pass
 
     def caller(self, frame):
-        response = self.client.faces_detect(buffer=frame)
+        data = cv2.imencode('.png', frame)[1].tobytes()
+
+        response = self.client.faces_detect(buffer=data)
+
         print(response)
         return frame
 

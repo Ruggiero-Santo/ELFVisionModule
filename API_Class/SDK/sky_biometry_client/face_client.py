@@ -17,12 +17,12 @@ try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
-	
+
 try:
     import json
 except ImportError:
     import simplejson as json
-	
+
 from future.utils import iteritems
 
 API_HOST = 'api.skybiometry.com/fc'
@@ -339,7 +339,7 @@ class FaceClient(object):
 
         # Local file is provided, use multi-part form
         if files or buffers:
-            from multipart import Multipart
+            from .multipart import Multipart
             form = Multipart()
 
             for key, value in  iteritems (data):
@@ -396,4 +396,3 @@ class FaceError(Exception):
 
     def __str__(self):
         return '%s (%d)' % (self.error_message, self.error_code)
-
