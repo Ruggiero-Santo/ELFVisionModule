@@ -9,13 +9,16 @@ def demo(myAPI):
         # Capture frame-by-frame
         ret, frame = video_capture.read() #np.array
 
-        frame = myAPI.caller(cv2.resize(frame, (320, 240)) )
+        frame = cv2.resize(frame, (320, 240))
+
+        key = cv2.waitKey(100) & 0xFF
+        if  key == ord('q'):
+            break
+        elif key == ord('r'):
+            frame = myAPI.caller(frame)
 
         # Display the resulting frame
         cv2.imshow('Video', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
 
     # When everything is done, release the capture
     video_capture.release()

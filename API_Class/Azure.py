@@ -5,7 +5,6 @@ import os
 class Azure():
 
     FACE_API = {
-        'key': os.getenv('AZURE_FACE', None),
         'url': 'https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect',
         'params': {
             'returnFaceId': 'true',
@@ -15,7 +14,6 @@ class Azure():
     }
 
     VISION_API = {
-        'key': os.getenv('AZURE_VISION', None),
         'url':'https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze',
         'params': {
             'visualFeatures': 'Categories,Description,Color'
@@ -47,8 +45,10 @@ class Azure():
 
         if API == "face":
             API = self.FACE_API
+            API.update({'key': os.getenv('AZURE_FACE', None)})
         if API == "vision":
             API = self.VISION_API
+            API.update({'key': os.getenv('AZURE_VISION', None)})
 
         self.url_API = API['url']
         if API['key'] != None:

@@ -69,7 +69,7 @@ class FaceClient(object):
                                      'fb_oauth_token': oauth_token}
 
     ### Recognition engine methods ###
-    def faces_detect(self, urls=None, file=None, buffer=None, aggressive=False):
+    def faces_detect(self, urls=None, file=None, matrix=None, aggressive=False):
         """
         Returns tags for detected faces in one or more photos, with geometric
         information of the tag, eyes, nose and mouth, as well as the gender,
@@ -77,28 +77,22 @@ class FaceClient(object):
 
         http://www.skybiometry.com/Documentation#faces/detect
         """
-        if not urls and not file and not buffer:
-            raise AttributeError('Missing URLs/filename/buffer argument')
+        if not urls and not file and matrix is None:
+            raise AttributeError('Missing URLs/filename/matrix argument')
 
         data = {'attributes': 'all', 'force_reprocess_image': 'true'}
-        files = []
-        buffers = []
 
         if file:
             # Check if the file exists
             if not hasattr(file, 'read') and not os.path.exists(file):
                 raise IOError('File %s does not exist' % (file))
-
-            files.append(file)
-        elif buffer:
-            buffers.append(buffer)
-        else:
+        elif urls:
             data['urls'] = urls
 
         if aggressive:
             data['detector'] = 'aggressive'
 
-        response = self.send_request('faces/detect', data, files, buffers)
+        response = self.send_request('faces/detect', data, file, matrix)
         return response
 
     def faces_status(self, uids=None, namespace=None):
@@ -119,7 +113,7 @@ class FaceClient(object):
         response = self.send_request('faces/status', data)
         return response
 
-    def faces_recognize(self, uids=None, urls=None, file=None, buffer=None, aggressive=False, train=None, namespace=None):
+    def faces_recognize(self, uids=None, urls=None, file=None, matrix=None, aggressive=False, train=None, namespace=None):
         """
         Attempts to detect and recognize one or more user IDs' faces, in one
         or more photos.
@@ -130,23 +124,18 @@ class FaceClient(object):
 
         http://www.skybiometry.com/Documentation#faces/recognize
         """
-        if not uids or (not urls and not file and not buffer):
+        if not uids or (not urls and not file and matrix is None):
             raise AttributeError('Missing required arguments')
 
         (facebook_uids, twitter_uids) = self.__check_user_auth_credentials(uids)
 
         data = {'uids': uids, 'attributes': 'all'}
-        files = []
-        buffers = []
 
         if file:
             # Check if the file exists
             if not hasattr(file, 'read') and not os.path.exists(file):
                 raise IOError('File %s does not exist' % (file))
-            files.append(file)
-        elif buffer:
-            buffers.append(buffer)
-        else:
+        elif urls:
             data.update({'urls': urls})
 
         if aggressive:
@@ -155,7 +144,7 @@ class FaceClient(object):
         self.__append_user_auth_data(data, facebook_uids, twitter_uids)
         self.__append_optional_arguments(data, train=train, namespace=namespace)
 
-        response = self.send_request('faces/recognize', data, files, buffers)
+        response = self.send_request('faces/recognize', data, file, matrix)
         return response
 
     def faces_train(self, uids=None, namespace=None):
@@ -329,59 +318,25 @@ class FaceClient(object):
             if value:
                 data.update({key: value})
 
-    def send_request(self, method=None, parameters=None, files=None, buffers=None):
+    def send_request(self, method=None, parameters=None, files=None, matrix=None):
         protocol = 'https://' if USE_SSL else 'http://'
         url = '%s%s/%s.%s' % (protocol, API_HOST, method, self.format)
-        data = { 'api_key': self.api_key, 'api_secret': self.api_secret }
+        url_params = { 'api_key': self.api_key, 'api_secret': self.api_secret }
+        _files = None
 
+        post_data = {}
         if parameters:
-            data.update(parameters)
+            url_params.update(parameters)
 
         # Local file is provided, use multi-part form
-        if files or buffers:
-            from .multipart import Multipart
-            form = Multipart()
-
-            for key, value in  iteritems (data):
-                form.field(key, value)
-
+        if files or not matrix is None:
             if files:
-                for i, file in enumerate(files, 1):
-                    if hasattr(file, 'read'):
-                        if hasattr(file, 'name'):
-                            name = os.path.basename(file.name)
-                        else:
-                            name = 'attachment_%d' % i
-                        close_file = False
-                    else:
-                        name = os.path.basename(file)
-                        file = open(file, 'rb')
-                        close_file = True
-
-                    try:
-                        form.file(name, name, file.read())
-                    finally:
-                        if close_file:
-                            file.close()
+                _files = {'files': open(file, 'rb')}
             else:
-                for i, buffer in enumerate(buffers, 1):
-                    name = 'attachment_%d' % i
-                    form.file(name, name, buffer)
-            (content_type, post_data) = form.get()
-            headers = {'Content-Type': content_type}
-        else:
-            print(data)
-            post_data = urlencode(data)
-            headers = {}
+                _files = {'files': matrix}
 
-
-        try:
-            r = requests.post(url, headers=headers, data=post_data)
-            response = r.text
-        except HTTPError as e:
-            response = e.response.text
-
-        response_data = json.loads(response)
+        r = requests.post(url, params = url_params, files = _files)
+        response_data = json.loads(r.text)
 
         if 'status' in response_data and response_data['status'] == 'failure':
             raise FaceError(response_data['error_code'], response_data['error_message'])

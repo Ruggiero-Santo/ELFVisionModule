@@ -1,6 +1,7 @@
 from .SDK import FaceClient
 import os
 import cv2
+from urllib.parse import urlencode
 
 class SkyBiometry():
 
@@ -16,11 +17,11 @@ class SkyBiometry():
         pass
 
     def caller(self, frame):
-        data = cv2.imencode('.png', frame)[1].tobytes()
+        data = cv2.imencode('.jpg', frame)[1]
 
-        response = self.client.faces_detect(buffer=data)
-
+        response = self.client.faces_detect(matrix=data)
         print(response)
+
         return frame
 
     def finalizer(self):
