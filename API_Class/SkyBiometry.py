@@ -1,7 +1,6 @@
 from .SDK import FaceClient
 import os
 import cv2
-from urllib.parse import urlencode
 
 class SkyBiometry():
 
@@ -11,25 +10,22 @@ class SkyBiometry():
     def _drawRectFace(image, jsonResult):
         faces = jsonResult["photos"][0]["tags"]
         img_h, img_w, _ = image.shape
+        size = (img_w, img_h)
         for face in faces:
             # Draw Rectangle
             pos = face["center"]
-            x = SkyBiometry._percent2Px(pos["x"], img_w)
-            y = SkyBiometry._percent2Px(pos["y"], img_h)
+            center_face = tuple(map(lambda p, t: SkyBiometry._percent2Px(p, t), (pos["x"], pos["y"]), size))
+            size_face = tuple(map(lambda p, t: SkyBiometry._percent2Px(p, t), (face["width"], face["height"]), size))
 
-            w = SkyBiometry._percent2Px(face["width"], img_w)
-            h = SkyBiometry._percent2Px(face["height"], img_h)
-
-            origin = (x-w//2, y-h//2)
-            size = tuple(map(lambda x, y: x+y, origin, (w, h)))
-
-            cv2.rectangle(image, origin, size, (0,255,0), 3)
+            origin_face = tuple(map(lambda x, y: x-y//2, center_face, size_face))
+            end_face = tuple(map(lambda x, y: x+y, origin_face, size_face))
+            cv2.rectangle(image, origin_face, end_face, (0,255,0), 3)
 
             # Write gender and emotion
             attributes = face["attributes"]
             emotion = attributes["mood"]["value"]
             gender = attributes["gender"]["value"]
-            cv2.putText(image,"%s,%s"%(gender, emotion), origin, cv2.FONT_HERSHEY_PLAIN, 2, (255,255,255), 2, cv2.LINE_AA)
+            cv2.putText(image,"%s,%s"%(gender, emotion), origin_face, cv2.FONT_HERSHEY_PLAIN, 2, (255,255,255), 2, cv2.LINE_AA)
 
         return image
 
@@ -46,11 +42,8 @@ class SkyBiometry():
 
     def caller(self, frame):
         data = cv2.imencode('.jpg', frame)[1]
-
         response = self.client.faces_detect(matrix=data)
-        print(response)
         frame = SkyBiometry._drawRectFace(frame, response)
-
         return frame
 
     def finalizer(self):
