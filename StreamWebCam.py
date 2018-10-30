@@ -15,7 +15,8 @@ def demo(myAPI):
         if  key == ord('q'):
             break
         elif key == ord('r'):
-            frame = myAPI.caller(frame)
+            pass
+        frame = myAPI.caller(frame)
 
         # Display the resulting frame
         cv2.imshow('Video', frame)

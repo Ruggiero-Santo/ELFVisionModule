@@ -27,17 +27,17 @@ class Azure():
             origin = (fr["left"], fr["top"])
             size = tuple(map(lambda x, y: x+y, origin, (fr['height'], fr['width'])))
             cv2.rectangle(image, origin, size, (0,255,0), 3)
+
             # Write gender and emotion
             fa = face["faceAttributes"]
             emotion = max([(value, key) for key, value in fa["emotion"].items()])[1]
             cv2.putText(image,"%s,%s"%(fa["gender"], emotion), origin, cv2.FONT_HERSHEY_PLAIN, 2, (255,255,255), 2, cv2.LINE_AA)
+
             # Draw Landmarks
             fl = face["faceLandmarks"]
             for key, pos in fl.items():
                 xy = (int(pos["x"]), int(pos["y"]))
                 cv2.circle(image, xy, 1, (0,0,255), -1)
-
-            print(face)
 
         return image
 
@@ -68,9 +68,9 @@ class Azure():
         data = cv2.imencode('.png', frame)[1].tobytes()
 
         response = requests.post(self.url_API, params=self.params, headers=self.headers, data=data)
-        res = Azure._drawRectFace(frame, response.json())
+        frame = Azure._drawRectFace(frame, response.json())
 
-        return res
+        return frame
 
     def finalizer(self):
         pass
