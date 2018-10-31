@@ -35,7 +35,7 @@ python StreamWebCam.py
 ```
 to launch the app.
 
-##Important
+## Important
 
 -To use it you have to get API_SECRET_KEY and API_CLIENT for at least one of the services listed before.
 -set virtual enviroments variables
