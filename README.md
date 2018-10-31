@@ -6,8 +6,8 @@ ELF Agent Vision Vision Module
 ## Highlights
 
 APIs integration with:
-- *Azure Face* API
-- *Skybiometrics* API
+- *Azure Face*
+- *Skybiometrics*
 - *Face++*
 
 that provides the following features:
