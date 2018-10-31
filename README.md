@@ -37,7 +37,7 @@ to launch the app.
 
 ## Important
 
-- To use it you have to get API_SECRET_KEY and API_CLIENT for at least one of the services listed before.
+- To use it you have to get API_KEY and API_SECRET for at least one of the services listed before.
 - set virtual enviroments variables accorgind to the service you want to use
 
 *Variable Enviroment names*
