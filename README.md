@@ -37,6 +37,20 @@ to launch the app.
 
 ## Important
 
--To use it you have to get API_SECRET_KEY and API_CLIENT for at least one of the services listed before.
--set virtual enviroments variables
+- To use it you have to get API_SECRET_KEY and API_CLIENT for at least one of the services listed before.
+- set virtual enviroments variables accorgind to the service you want to use
+
+*Variable Enviroment names*
+
+AZURE:
+- AZURE_FACE
+- AZURE_VISION
+
+SKYBIOMETRICS:
+- SKYB_KEY
+- SKYB_SECRET
+
+FACE++:
+- FACEpp_KEY
+- FACEpp_SECRET
 
