@@ -24,7 +24,7 @@ class FacePlusPlus():
             raise ValueError("You must set Env with FACEpp_KEY and FACEpp_SECRET (value of your application) or indicate them as parameters.")
         else:
             self.url_params = { 'api_key': key, 'api_secret': secret }
-            self.url = 'https://api-eu.faceplusplus.com/facepp/v3/detect'
+            self.url = 'https://api-eu.faceplusplus.com/facepp/v3/'
 
     def initializer(self):
         self.url_params.update({"return_attributes": "gender,age,smiling,headpose,facequality,blur,eyestatus,emotion,ethnicity,beauty,mouthstatus,eyegaze,skinstatus", "return_landmark": 2})
@@ -33,22 +33,24 @@ class FacePlusPlus():
     def caller(self, frame):
         _files = {'image_file': cv2.imencode('.jpg', frame)[1]}
 
-        response = requests.post(self.url, params = self.url_params, files = _files)
+        response = requests.post(self.url + "detect", params = self.url_params, files = _files)
         frame = drawRectFace(frame, json.loads(response.text))
-        print(response.text)
         return frame
 
-    def detect(self, frame = None, image = None):
-        self.url = 'https://api-eu.faceplusplus.com/facepp/v3/detect'
+    def detect(self, frame = None, file = None):
+        url = self.url + 'detect'
         self.url_params.update({"return_attributes": "gender,age,smiling,emotion"})
 
         if frame is not None:
             data = cv2.imencode('.jpg', frame)[1]
 
-        if image is not None:
-            data = image
+        if file is not None:
+            if isinstance(file, str):
+                data = open(file, 'rb')
+            else:
+                data = image
 
-        return json.loads(requests.post(self.url, params = self.url_params, files = {'image_file': data}).text)
+        return json.loads(requests.post(url, params = self.url_params, files = {'image_file': data}).text)
 
     def finalizer(self):
         pass
