@@ -27,6 +27,6 @@ def demo(myAPI):
 
 
 # demo(API.openCV())
-demo(API.SkyBiometry())
-# demo(API.FacePlusPlus())
+# demo(API.SkyBiometry())
+demo(API.FacePlusPlus())
 # demo(API.Azure())

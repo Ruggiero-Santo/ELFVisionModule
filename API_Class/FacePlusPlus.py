@@ -7,7 +7,7 @@ class FacePlusPlus():
         faces = jsonResult["faces"]
         for face in faces:
             print(face["face_rectangle"])
-            # {w, x, y, h} = face["face_rectangle"]
+            # w, x, y, h = face["face_rectangle"].values()
         return image
 
     def __init__(self, FACEpp_Key = None, FACEpp_Secret = None):
