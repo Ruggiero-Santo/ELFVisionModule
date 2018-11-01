@@ -2,8 +2,8 @@ import cv2
 import os
 
 class openCV():
-    
-    def initializer(self):
+
+    def __init__(self):
         self.face = cv2.CascadeClassifier(cv2.data.haarcascades+'/haarcascade_frontalface_default.xml')
 
     def caller(self, frame):
@@ -14,6 +14,9 @@ class openCV():
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         return frame
+
+    def setAttr(self, attributes=None):
+        pass
 
     def finalizer(self):
         pass

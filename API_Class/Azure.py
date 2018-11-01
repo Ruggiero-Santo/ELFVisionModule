@@ -40,10 +40,10 @@ class Azure():
         self.params = API['params']
 
 
-    def initializer(self):
+    def setAttr(self, attributes=None):
         self.headers.update({'Content-Type': 'application/octet-stream'})
 
-    def caller(self, frame):
+    def simple_demo(self, frame):
         data = cv2.imencode('.png', frame)[1].tobytes()
 
         response = requests.post(self.url_API, params=self.params, headers=self.headers, data=data)

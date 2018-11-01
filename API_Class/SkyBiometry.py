@@ -12,12 +12,12 @@ class SkyBiometry():
             raise ValueError("You must set Env with SKYB_KEY and SKYB_SECRET (value of your application) or indicate them as parameters.")
         self.client = FaceClient(self.key, self.secret)
 
-    def initializer(self):
+    def setAttr(self, attributes=None):
         pass
 
-    def caller(self, frame):
+    def simple_demo(self, frame):
         data = cv2.imencode('.jpg', frame)[1]
-        
+
         response = self.client.faces_detect(matrix=data)
         frame = drawRectFace(frame, response)
 

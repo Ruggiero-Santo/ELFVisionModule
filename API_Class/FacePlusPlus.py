@@ -23,23 +23,35 @@ class FacePlusPlus():
         if key == None or key == None:
             raise ValueError("You must set Env with FACEpp_KEY and FACEpp_SECRET (value of your application) or indicate them as parameters.")
         else:
-            self.url_params = { 'api_key': key, 'api_secret': secret }
+            self.url_params = { 'api_key': key, 'api_secret': secret, "return_attributes" : "emotion"}
             self.url = 'https://api-eu.faceplusplus.com/facepp/v3/'
 
-    def initializer(self):
-        self.url_params.update({"return_attributes": "gender,age,smiling,headpose,facequality,blur,eyestatus,emotion,ethnicity,beauty,mouthstatus,eyegaze,skinstatus", "return_landmark": 2})
+    def setAttr(self, attributes=None):
+        if attributes is not None:
+            if type(attributes) is str:
+                self.url_params.update({"return_attributes": attributes, "return_landmark": 2})
+            else:
+                raise TypeError("attributes should be a str. You've provided a " + type(attributes).__name__ + ", instead.")
+        else:
+            #all attributes
+            self.url_params.update({"return_attributes": "gender,age,smiling,headpose,facequality,blur,eyestatus,emotion,ethnicity,beauty,mouthstatus,eyegaze,skinstatus", "return_landmark": 2})
 
 
-    def caller(self, frame):
-        _files = {'image_file': cv2.imencode('.jpg', frame)[1]}
+    def simple_demo(self, frame):
+        #_files = {'image_file': cv2.imencode('.jpg', frame)[1]}
 
-        response = requests.post(self.url + "detect", params = self.url_params, files = _files)
-        frame = drawRectFace(frame, json.loads(response.text))
+        self.detect(frame = cv2.imencode('.jpg', frame)[1], )
+        #response = requests.post(self.url + "detect", params = self.url_params, files = _files)
+        #frame = drawRectFace(frame, json.loads(response.text))
         return frame
 
-    def detect(self, frame = None, file = None):
+    def detect(self, frame = None, file = None, attributes = None):
         url = self.url + 'detect'
-        self.url_params.update({"return_attributes": "gender,age,smiling,emotion"})
+
+        if attributes is not None:
+            self.setAttr(attributes = attributes)
+        else:
+            self.setAttr(attributes = "gender,age,smiling,emotion")
 
         if frame is not None:
             data = cv2.imencode('.jpg', frame)[1]
@@ -48,7 +60,7 @@ class FacePlusPlus():
             if isinstance(file, str):
                 data = open(file, 'rb')
             else:
-                data = image
+                data = file
 
         return json.loads(requests.post(url, params = self.url_params, files = {'image_file': data}).text)
 

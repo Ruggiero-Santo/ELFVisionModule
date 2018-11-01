@@ -3,8 +3,9 @@ import sys
 import API_Class as API
 
 def demo(myAPI):
-    myAPI.initializer()
+    myAPI.setAttr()
     video_capture = cv2.VideoCapture(0)
+    print("Press q to quit: ")
     while True:
         # Capture frame-by-frame
         ret, frame = video_capture.read() #np.array
@@ -16,7 +17,7 @@ def demo(myAPI):
             break
         elif key == ord('r'):
             pass
-        frame = myAPI.caller(frame)
+        frame = myAPI.simple_demo(frame)
 
         # Display the resulting frame
         cv2.imshow('Video', frame)
