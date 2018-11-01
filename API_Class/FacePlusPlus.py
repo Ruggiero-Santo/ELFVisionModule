@@ -38,11 +38,7 @@ class FacePlusPlus():
 
 
     def simple_demo(self, frame):
-        #_files = {'image_file': cv2.imencode('.jpg', frame)[1]}
-
-        self.detect(frame = cv2.imencode('.jpg', frame)[1], )
-        #response = requests.post(self.url + "detect", params = self.url_params, files = _files)
-        #frame = drawRectFace(frame, json.loads(response.text))
+        frame = drawRectFace(frame, self.detect(frame = frame))
         return frame
 
     def detect(self, frame = None, file = None, attributes = None):
