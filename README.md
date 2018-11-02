@@ -1,5 +1,5 @@
 # ELFVisionModule
-ELF Agent Vision Vision Module
+ELF Agent Vision Module
 
 *This project is currently under heavy development. Come back often to see what's new.*
 
@@ -33,7 +33,6 @@ and run:
 ```
 python StreamWebCam.py
 ```
-to launch the app.
 
 ## Important
 
