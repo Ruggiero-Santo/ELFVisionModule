@@ -33,7 +33,7 @@ class Test(unittest.TestCase):
         return
 
 
-    def test_attributes_changes(self):
+    def test_SetAttr(self):
 
         self.client.__init__()
         self.assertEqual(self.client.url_params['return_attributes'], "emotion" )

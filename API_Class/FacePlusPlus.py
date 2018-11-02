@@ -26,6 +26,13 @@ class FacePlusPlus():
             self.url_params = { 'api_key': key, 'api_secret': secret, "return_attributes" : "emotion"}
             self.url = 'https://api-eu.faceplusplus.com/facepp/v3/'
 
+        """
+        set attribute to be returned in the response
+        params:
+            attributes: list of attributes to return
+
+        for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
+        """
     def setAttr(self, attributes=None):
         if attributes is not None:
             if type(attributes) is str:
@@ -41,6 +48,17 @@ class FacePlusPlus():
         frame = drawRectFace(frame, self.detect(frame = frame))
         return frame
 
+    """
+    Face detection
+    params:
+        frame: matrix-like object representing a single frame
+        File: file object, file descriptor or filepath of the image
+        attributes: list of attributes to return, default = [gender,age,smiling,emotion]
+
+    return: json object
+
+    for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
+    """
     def detect(self, frame = None, file = None, attributes = None):
         url = self.url + 'detect'
 
