@@ -1,5 +1,6 @@
 import cv2
 import requests
+import os
 try:
     import json
 except ImportError:
@@ -8,7 +9,11 @@ except ImportError:
 API_HOST = 'https://api-eu.faceplusplus.com/facepp/v3/'
 
 class Facepp_Client(object):
+
     def __init__(self, api_key=None, api_secret=None):
+
+        api_key = os.getenv('FACEpp_KEY', None) if api_key==None else api_key
+        api_secret = os.getenv('FACEpp_SECRET', None) if api_secret==None else api_secret
 
         if not api_key or not api_secret:
             raise AttributeError('Missing api_key or api_secret argument')
@@ -17,7 +22,6 @@ class Facepp_Client(object):
         self.api_secret = api_secret
 
         self.url_params = { 'api_key': api_key, 'api_secret': api_secret}
-
 
     def detect(self, frame = None, file = None, attributes = None):
         """
@@ -48,7 +52,73 @@ class Facepp_Client(object):
             else:
                 data = file
 
-        return json.loads(requests.post(url, params = self.url_params, files = {'image_file': data}).text)
+        r = requests.post(url, params = self.url_params, files = {'image_file': data})
+        return json.loads(r.text)
+
+    def deleteFaceSet(self, outer_id = None, faceset_token = None ):
+        url = API_HOST + 'faceset/delete'
+        params = self.url_params
+
+        if outer_id:
+            params.update({'outer_id': outer_id})
+        elif faceset_token:
+            params.update({'faceset_token': faceset_token})
+        else:
+            raise AttributeError('You must define a unique outer_id or face_token.')
+
+        return json.loads(requests.post(url, params = params).text)
+
+    def createFaceSet(self, display_name = None, outer_id = None, face_tokens = None ):
+        url = API_HOST + 'faceset/create'
+        params = self.url_params
+
+        if not outer_id or not isinstance(outer_id, str):
+            raise AttributeError('You must define a unique outer_id')
+        params.update({'outer_id': outer_id})
+
+        if display_name:
+            params.update({'display_name': display_name})
+
+        if face_tokens:
+            if isinstance(face_tokens, list):
+                if len(face_tokens) <= 5:
+                    params.update({'face_tokens': ",".join(face_tokens)})
+                else:
+                    raise AttributeError('face_tokens array must be length at most 5.')
+            elif isinstance(face_tokens, str):
+                params.update({'face_tokens': face_tokens})
+            else:
+                raise AttributeError('face_tokens should be a string or a list of string. You provided a ' + type(face_tokens).__name__ + 'instead.')
+
+        print("paramse:----"+ str(params))
+        return json.loads(requests.post(url, params = params).text)
+
+    def addFace(self, face_tokens, faceset_token = None, outer_id = None):
+        url = API_HOST + "faceset/addface"
+        params = self.url_params
+
+        if not faceset_token and not outer_id:
+            raise AttributeError('Missing faceset_token or outer_id argument. At least one must be set.')
+
+        if face_tokens:
+            if isinstance(face_tokens, list):
+                if len(face_tokens) < 5:
+                    params.update({'face_tokens': ",".join(face_tokens)})
+                else:
+                    raise AttributeError('face_tokens array must be length at most 5.')
+            elif isinstance(face_tokens, str):
+                params.update({'face_tokens': face_tokens})
+            else:
+                raise AttributeError('face_tokens should be a string or a list of string. You provided a ' + type(face_tokens).__name__ + 'instead.')
+
+        if outer_id:
+            params.update({'outer_id': outer_id})
+        elif faceset_token:
+            params.update({'faceset_token': faceset_token})
+        else:
+            raise AttributeError('You must define a unique outer_id  or  face_token.')
+
+        return json.loads(requests.post(url, params = params).text)
 
     def setAttr(self, attributes=None):
         """
@@ -66,4 +136,4 @@ class Facepp_Client(object):
                 if attributes != "all":
                     self.url_params.update({"return_attributes": attributes})
             else:
-                raise TypeError("attributes should be a str. You've provided a " + type(attributes).__name__ + ", instead.")
+                raise TypeError("Attributes should be a str. You've provided a " + type(attributes).__name__ + ", instead.")
