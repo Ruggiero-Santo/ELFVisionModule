@@ -45,7 +45,9 @@ class FacePlusPlus():
 
 
     def simple_demo(self, frame):
-        frame = drawRectFace(frame, self.detect(frame = frame))
+        response = self.detect(frame = frame)
+        frame = drawRectFace(frame, response)
+        print(response)
         return frame
 
     """
