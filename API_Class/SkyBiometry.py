@@ -23,9 +23,6 @@ class SkyBiometry():
 
         return frame
 
-    def finalizer(self):
-        pass
-
 def drawRectFace(image, jsonResult):
     def percent2Px(percentage, tot):
         return int((tot*percentage)/ 100)

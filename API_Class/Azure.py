@@ -51,9 +51,6 @@ class Azure():
 
         return frame
 
-    def finalizer(self):
-        pass
-
 
 def drawRectFace(image, jsonResult):
     for face in jsonResult:

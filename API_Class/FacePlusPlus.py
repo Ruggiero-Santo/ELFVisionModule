@@ -7,11 +7,11 @@ except ImportError:
     import simplejson as json
 
 """
-Image Requirements
-Format : JPG (JPEG), PNG
-Size : between 48*48 and 4096*4096 (pixels)
-File size : no larger than 2MB
-Minimal size of face : the bounding box of a detected face is a square. The minimal side length of a square should be no less than 1/48 of the short side of image, and no less than 48 pixels. For example if the size of image is 4096 * 3200px, the minimal size of face should be 66 * 66px.
+    Image Requirements
+    Format : JPG (JPEG), PNG
+    Size : between 48*48 and 4096*4096 (pixels)
+    File size : no larger than 2MB
+    Minimal size of face : the bounding box of a detected face is a square. The minimal side length of a square should be no less than 1/48 of the short side of image, and no less than 48 pixels. For example if the size of image is 4096 * 3200px, the minimal size of face should be 66 * 66px.
 """
 
 class FacePlusPlus():
@@ -26,14 +26,14 @@ class FacePlusPlus():
             self.url_params = { 'api_key': key, 'api_secret': secret, "return_attributes" : "emotion"}
             self.url = 'https://api-eu.faceplusplus.com/facepp/v3/'
 
-        """
-        set attribute to be returned in the response
-        params:
-            attributes: list of attributes to return
-
-        for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
-        """
     def setAttr(self, attributes=None):
+        """
+            set attribute to be returned in the response
+            for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
+
+            params:
+                attributes: list of attributes to return
+        """
         if attributes is not None:
             if type(attributes) is str:
                 self.url_params.update({"return_attributes": attributes, "return_landmark": 2})
@@ -50,18 +50,19 @@ class FacePlusPlus():
         print(response)
         return frame
 
-    """
-    Face detection
-    params:
-        frame: matrix-like object representing a single frame
-        File: file object, file descriptor or filepath of the image
-        attributes: list of attributes to return, default = [gender,age,smiling,emotion]
-
-    return: json object
-
-    for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
-    """
     def detect(self, frame = None, file = None, attributes = None):
+        """
+            Face detection
+            for a complete list of attributes and returned json see: https://console.faceplusplus.com/documents/5679127
+
+            params:
+                frame: matrix-like object representing a single frame
+                File: file object, file descriptor or filepath of the image
+                attributes: list of attributes to return, default = [gender,age,smiling,emotion]
+
+            return:
+                json object
+        """
         url = self.url + 'detect'
 
         if attributes is not None:
@@ -79,9 +80,6 @@ class FacePlusPlus():
                 data = file
 
         return json.loads(requests.post(url, params = self.url_params, files = {'image_file': data}).text)
-
-    def finalizer(self):
-        pass
 
 
 def drawRectFace(image, jsonResult):
