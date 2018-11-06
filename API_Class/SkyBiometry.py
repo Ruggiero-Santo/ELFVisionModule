@@ -8,7 +8,7 @@ class SkyBiometry():
         self.key = os.getenv('SKYB_KEY', None) if SKYB_Key==None else SKYB_Key
         self.secret = os.getenv('SKYB_SECRET', None) if SKYB_Secret==None else SKYB_Secret
 
-        if self.key == None or self.key == None:
+        if self.key == None or self.secret == None:
             raise ValueError("You must set Env with SKYB_KEY and SKYB_SECRET (value of your application) or indicate them as parameters.")
         self.client = FaceClient(self.key, self.secret)
 
