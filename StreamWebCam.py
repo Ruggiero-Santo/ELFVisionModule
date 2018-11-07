@@ -27,7 +27,4 @@ def demo(myAPI):
     cv2.destroyAllWindows()
 
 
-#demo(API.openCV())
-# demo(API.SkyBiometry())
 demo(API.FacePlusPlus())
-# demo(API.Azure())
