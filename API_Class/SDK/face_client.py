@@ -133,8 +133,27 @@ class Facepp_Client(object):
             else:
                 raise AttributeError('face_tokens should be a string or a list of string. You provided a ' + type(face_tokens).__name__ + 'instead.')
 
-        print("paramse:----"+ str(params))
         return json.loads(requests.post(url, params = params).text)
+
+        def getFacesetDetail(self, outer_id = None, faceset_token = None ):
+            url = API_HOST + 'faceset/getdetail'
+            params = self.url_params
+
+            if not outer_id and not faceset_token:
+                raise AttributeError('You must define a unique outer_id or faceset_token.')
+
+            if outer_id and isinstance(outer_id, str):
+                params.update({'outer_id': outer_id})
+            else:
+                raise AttributeError('outer_id should be a str. You provided a ' + type(outer_id).__name__ + 'instead.')
+
+            if faceset_token and isinstance(faceset_token, str):
+                params.update({'faceset_token': faceset_token})
+            else:
+                raise AttributeError('faceset_token should be a str. You provided a ' + type(faceset_token).__name__ + 'instead.')
+
+            return json.loads(requests.post(url, params = params).text)
+
 
     def addFace(self, face_tokens, faceset_token = None, outer_id = None):
         url = API_HOST + "faceset/addface"
