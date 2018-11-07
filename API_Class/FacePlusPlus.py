@@ -23,10 +23,10 @@ class FacePlusPlus():
             self.client = Facepp_Client(key, secret)
 
     def simple_demo(self, frame):
-        # response = self.client.detect(frame = frame)
-        response = self.client.search(image_file = cv2.imencode('.jpg', frame)[1], outer_id = 'fiss')
-        # frame = drawRectFace(frame, response)
-        print(response)
+        response = self.client.detect(frame = frame)
+        r = self.client.search(image_file = cv2.imencode('.jpg', frame)[1], outer_id = 'fiss')
+        frame = drawRectFace(frame, response)
+        print(r)
         return frame
 
     def setAttr(self, attributes=None):
