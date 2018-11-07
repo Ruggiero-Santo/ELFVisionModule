@@ -1,6 +1,6 @@
 import cv2
 import sys
-import API_Class as API
+import online as API
 
 def demo(myAPI):
     myAPI.setAttr()
