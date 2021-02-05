@@ -1,7 +1,7 @@
 # ELFVisionModule
 ELF Agent Vision Module
 
-*This project is currently under heavy development. Come back often to see what's new.*
+This repository is only an initial phase of the project. Much more has been done to improve and extend the functionality, the full project can be viewed in [this](https://github.com/SmartApplicationUnipi/Smart_ELF) repository
 
 ## Highlights
 
